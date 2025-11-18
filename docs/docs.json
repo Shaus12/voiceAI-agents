@@ -1,0 +1,103 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "voiceFX AI",
+  "colors": {
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
+  },
+  "favicon": "/favicon.ico",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "getting-started/index",
+                  "getting-started/prerequisites",
+                  "getting-started/troubleshooting"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Configurations",
+            "pages": [
+              "configurations/inference-providers"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/campaigns",
+              "features/looptalk"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "integrations/overview"
+            ]
+          },
+          {
+            "group": "Telephony",
+            "pages": [
+              "integrations/telephony/overview",
+              "integrations/telephony/twilio",
+              "integrations/telephony/vonage",
+              "integrations/telephony/webhooks",
+              "integrations/telephony/custom"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://docs.voicefx.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://github.com/voicefx-hq/voicefx/issues/new/choose"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.voicefx.com"
+    }
+  },
+  "contextual": {
+    "options": [
+     "copy",
+     "view",
+     "chatgpt",
+     "claude",
+     "perplexity",
+     "mcp",
+     "cursor",
+     "vscode"
+   ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/voicefx-hq",
+      "linkedin": "https://linkedin.com/company/voicefx"
+    }
+  }
+}

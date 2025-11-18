@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(REGISTRY=ghcr.io/voicefx-hq ENABLE_TELEMETRY=true docker compose up:*)",
+      "Bash(REGISTRY=ghcr.io/dograh-hq ENABLE_TELEMETRY=true docker compose:*)",
+      "Bash(docker build:*)",
+      "Bash(cat:*)",
+      "Bash(docker images:*)",
+      "Bash(/Users/shoti/dograh/pipecat/README.md)",
+      "Bash(curl:*)",
+      "Bash(unzip:*)",
+      "Bash(docker run:*)",
+      "Bash(DOCKER_BUILDKIT=1 docker build:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker tag ghcr.io/dograh-hq/dograh-api:latest dograh-api:latest)",
+      "Bash(docker tag ghcr.io/dograh-hq/dograh-ui:latest dograh-ui:latest)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
