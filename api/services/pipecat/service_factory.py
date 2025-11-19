@@ -8,10 +8,19 @@ from pipecat.services.azure.llm import AzureLLMService
 from pipecat.services.cartesia.stt import CartesiaSTTService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.deepgram.tts import DeepgramTTSService
-from pipecat.services.voicefx.llm import VoiceFXLLMService
-from pipecat.services.voicefx.stt import VoiceFXSTTService
-from pipecat.services.voicefx.tts import VoiceFXTTSService
 from pipecat.services.elevenlabs.tts import ElevenLabsTTSService
+
+# VoiceFX services are optional (may not be available in all pipecat versions)
+try:
+    from pipecat.services.voicefx.llm import VoiceFXLLMService
+    from pipecat.services.voicefx.stt import VoiceFXSTTService
+    from pipecat.services.voicefx.tts import VoiceFXTTSService
+    VOICEFX_AVAILABLE = True
+except ImportError:
+    VOICEFX_AVAILABLE = False
+    VoiceFXLLMService = None
+    VoiceFXSTTService = None
+    VoiceFXTTSService = None
 from pipecat.services.google.llm import GoogleLLMService
 from pipecat.services.groq.llm import GroqLLMService
 from pipecat.services.openai.llm import OpenAILLMService
@@ -41,6 +50,10 @@ def create_stt_service(user_config):
             audio_passthrough=False,  # Disable passthrough since audio is buffered separately
         )
     elif user_config.stt.provider == ServiceProviders.VOICEFX.value:
+        if not VOICEFX_AVAILABLE:
+            raise HTTPException(
+                status_code=400, detail="VoiceFX STT service is not available"
+            )
         base_url = MPS_API_URL.replace("http://", "ws://").replace("https://", "wss://")
         return VoiceFXSTTService(
             base_url=base_url,
@@ -81,6 +94,10 @@ def create_tts_service(user_config, audio_config: "AudioConfig"):
             ),
         )
     elif user_config.tts.provider == ServiceProviders.VOICEFX.value:
+        if not VOICEFX_AVAILABLE:
+            raise HTTPException(
+                status_code=400, detail="VoiceFX TTS service is not available"
+            )
         # Convert HTTP URL to WebSocket URL for TTS
         base_url = MPS_API_URL.replace("http://", "ws://").replace("https://", "wss://")
         # Handle both enum and string values for model and voice
@@ -138,6 +155,10 @@ def create_llm_service(user_config):
             params=AzureLLMService.InputParams(temperature=0.1),
         )
     elif user_config.llm.provider == ServiceProviders.VOICEFX.value:
+        if not VOICEFX_AVAILABLE:
+            raise HTTPException(
+                status_code=400, detail="VoiceFX LLM service is not available"
+            )
         return VoiceFXLLMService(
             base_url=f"{MPS_API_URL}/api/v1/llm",
             api_key=user_config.llm.api_key,

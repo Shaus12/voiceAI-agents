@@ -28,7 +28,8 @@ echo "Starting VoiceFX AI Services at $(date) in BASE_DIR: ${BASE_DIR}"
 ###############################################################################
 
 # Load environment from a file if it exists
-if [[ -f "$ENV_FILE" ]]; then
+# Skip if DATABASE_URL is already set (e.g., from docker-compose)
+if [[ -f "$ENV_FILE" && -z "${DATABASE_URL:-}" ]]; then
   set -a && . "$ENV_FILE" && set +a
 fi
 
@@ -109,7 +110,7 @@ rm -f "$RUN_DIR/uvicorn.port" "$RUN_DIR/uvicorn_new.port" "$RUN_DIR/uvicorn_old.
 ### 5) Run migrations
 ###############################################################################
 
-alembic -c "$BASE_DIR/api/alembic.ini" upgrade head
+cd "$BASE_DIR/api" && alembic upgrade head
 
 ###############################################################################
 ### 6) Prepare logs

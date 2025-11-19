@@ -54,7 +54,11 @@ ENV PYTHONUNBUFFERED=1
 
 # Copy application code
 COPY ./api ./api
-COPY ./scripts/start_services.sh ./scripts/start_services.sh
+COPY ./scripts ./scripts
+
+# Fix line endings in shell scripts
+RUN sed -i 's/\r$//' ./scripts/start_services.sh && \
+    chmod +x ./scripts/start_services.sh
 
 ENV PYTHONPATH=/app
 

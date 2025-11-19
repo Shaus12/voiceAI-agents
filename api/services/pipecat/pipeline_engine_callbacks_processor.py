@@ -7,7 +7,6 @@ from pipecat.frames.frames import (
     Frame,
     HeartbeatFrame,
     LLMFullResponseStartFrame,
-    LLMGeneratedTextFrame,
     LLMTextFrame,
     StartFrame,
     TTSSpeakFrame,
@@ -38,6 +37,7 @@ class PipelineEngineCallbacksProcessor(FrameProcessor):
         self._generation_started_callback = generation_started_callback
         self._llm_text_frame_callback = llm_text_frame_callback
         self._end_task_frame_pushed = False
+        self._text_generation_signaled = False
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
@@ -46,14 +46,16 @@ class PipelineEngineCallbacksProcessor(FrameProcessor):
             await self._start(frame)
         elif isinstance(frame, HeartbeatFrame):
             await self._check_call_duration()
-        elif isinstance(frame, LLMGeneratedTextFrame):
-            await self._generated_text_frame(frame)
         elif isinstance(frame, LLMFullResponseStartFrame):
             await self._generation_started()
-        elif (
-            isinstance(frame, (LLMTextFrame, TTSSpeakFrame))
-            and self._llm_text_frame_callback
-        ):
+        elif isinstance(frame, LLMTextFrame):
+            # Signal text generation on first LLMTextFrame
+            if not self._text_generation_signaled and self._llm_generated_text_callback:
+                await self._llm_generated_text_callback()
+                self._text_generation_signaled = True
+            if self._llm_text_frame_callback:
+                await self._llm_text_frame_callback(frame.text)
+        elif isinstance(frame, TTSSpeakFrame) and self._llm_text_frame_callback:
             # Include TTSSpeakFrame here since for static nodes, we send TTSSpeakFrame
             # which can act as reference while fixing the aggregated trascript
             await self._llm_text_frame_callback(frame.text)
@@ -61,6 +63,7 @@ class PipelineEngineCallbacksProcessor(FrameProcessor):
 
     async def _start(self, _: StartFrame):
         self._start_time = time.time()
+        self._text_generation_signaled = False
 
     async def _check_call_duration(self):
         if self._start_time is not None:
@@ -74,10 +77,6 @@ class PipelineEngineCallbacksProcessor(FrameProcessor):
                         "Max call duration exceeded. Skipping EndTaskFrame since already sent"
                     )
 
-    async def _generated_text_frame(self, _: LLMGeneratedTextFrame):
-        """Handle LLMGeneratedTextFrame."""
-        if self._llm_generated_text_callback is not None:
-            await self._llm_generated_text_callback()
 
     async def _generation_started(self):
         if self._generation_started_callback:

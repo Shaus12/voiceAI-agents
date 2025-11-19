@@ -217,6 +217,15 @@ async def create_workflow_from_template(
     Raises:
         HTTPException: If MPS API call fails
     """
+    # In OSS mode, template creation requires MPS API which may not be available
+    from api.constants import DEPLOYMENT_MODE, MPS_API_URL
+    
+    if DEPLOYMENT_MODE == "oss" and (not MPS_API_URL or MPS_API_URL == "https://services.voicefx.com"):
+        raise HTTPException(
+            status_code=501,
+            detail="Template creation is not available in OSS mode. Please create workflows manually using /create/definition endpoint."
+        )
+    
     try:
         # Call MPS API to generate workflow using the client
         if DEPLOYMENT_MODE == "oss":
