@@ -119,9 +119,7 @@ services:
       - app-network
 
   ui:
-    build:
-      context: .
-      dockerfile: ui/Dockerfile
+    image: ${REGISTRY:-dograhai}/dograh-ui:latest
     environment:
       # Server-side URL (SSR, internal Docker network)
       BACKEND_URL: "http://api:8000"
