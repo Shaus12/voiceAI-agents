@@ -41,3 +41,10 @@ build/
 *.log
 logs/
 
+# Production files
+.env.production
+nginx/ssl/
+nginx/logs/
+certbot/
+backups/
+
