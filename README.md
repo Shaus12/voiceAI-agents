@@ -98,15 +98,41 @@ Architecture diagram _(coming soon)_
 
 ## Deployment Options
 
-### Local Development
+### 🆓 Free Testing (Recommended to Start)
+
+Test VoiceFX AI for FREE before committing to paid hosting:
+
+- **[One-Click Deploy](ONE-CLICK-DEPLOY.md)** - Deploy to Render in 2 minutes
+- **[Free Hosting Guide](DEPLOY-FREE-TESTING.md)** - Railway, Fly.io, or Oracle Cloud options
+
+### 💻 Local Development
 
 Refer [prerequisites](https://docs.voicefx.com/getting-started/prerequisites) and [first steps](#-get-started)
 
-### Production (Self-Hosted)
+### 🚀 Production Deployment (Self-Hosted)
 
-Production guide coming soon. [Drop in a message](https://join.slack.com/t/voicefx-community/shared_invite/zt-3czr47sw5-MSg1J0kJ7IMPOCHF~03auQ) for assistance.
+Complete production deployment guides available:
 
-### Cloud Version
+- **[Beginner's Guide](DEPLOY-FOR-BEGINNERS.md)** - Step-by-step for absolute beginners
+- **[Full Deployment Guide](DEPLOYMENT.md)** - Comprehensive technical documentation
+- **[Quick Reference](DEPLOYMENT-QUICKREF.md)** - Command cheat sheet for daily operations
+- **[Monitoring Guide](MONITORING.md)** - Setup alerts and monitoring
+
+**Quick production deploy:**
+```bash
+# Copy environment template
+cp .env.production.example .env.production
+
+# Edit with your settings
+nano .env.production
+
+# Deploy
+./scripts/setup-ssl.sh
+./scripts/deploy.sh setup
+./scripts/deploy.sh start
+```
+
+### ☁️ Cloud Version
 
 Visit [https://www.voicefx.com](https://www.voicefx.com/) for our managed cloud offering.
 
