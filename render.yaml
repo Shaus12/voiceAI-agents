@@ -1,26 +1,17 @@
+databases:
+  - name: voicefx-db
+    databaseName: voicefx
+    user: voicefx
+    plan: free
+
 services:
-  # PostgreSQL Database
-  - type: pserv
-    name: voicefx-db
-    env: docker
-    plan: free
-    databases:
-      - name: voicefx
-        databaseName: voicefx
-        user: voicefx
-
-  # Redis
-  - type: redis
-    name: voicefx-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-
   # API Backend
   - type: web
     name: voicefx-api
-    env: docker
-    dockerfilePath: ./api/Dockerfile
+    runtime: docker
     plan: free
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: .
     healthCheckPath: /api/v1/health
     envVars:
       - key: DATABASE_URL
@@ -28,43 +19,41 @@ services:
           name: voicefx-db
           property: connectionString
       - key: REDIS_URL
-        fromService:
-          name: voicefx-redis
-          type: redis
-          property: connectionString
+        value: redis://red-placeholder:6379
       - key: ENVIRONMENT
         value: production
       - key: LOG_LEVEL
         value: INFO
       - key: ENABLE_TELEMETRY
-        value: true
+        value: "true"
       - key: ENABLE_AWS_S3
-        value: false
+        value: "false"
       - key: PORT
-        value: 8000
+        value: "8000"
 
   # UI Frontend
   - type: web
     name: voicefx-ui
-    env: docker
-    dockerfilePath: ./ui/Dockerfile
+    runtime: docker
     plan: free
+    dockerfilePath: ./ui/Dockerfile
+    dockerContext: .
     envVars:
       - key: BACKEND_URL
         fromService:
-          name: voicefx-api
           type: web
+          name: voicefx-api
           property: host
       - key: NEXT_PUBLIC_API_URL
         fromService:
-          name: voicefx-api
           type: web
+          name: voicefx-api
           property: host
       - key: NODE_ENV
         value: production
       - key: ENABLE_TELEMETRY
-        value: true
+        value: "true"
       - key: NEXT_PUBLIC_AUTH_PROVIDER
         value: local
       - key: PORT
-        value: 3010
+        value: "3010"
