@@ -14,46 +14,11 @@ export default async function Home() {
   const authProvider = getServerAuthProvider();
   logger.debug('[HomePage] Auth provider:', authProvider);
 
-  // For local/OSS provider, check if user has workflows
+  // For local/OSS provider, show landing page (SignInClient will render the landing page)
   if (authProvider === 'local') {
-    logger.debug('[HomePage] Local provider detected, checking for workflows');
-
-    try {
-      const accessToken = await getServerAccessToken();
-      if (accessToken) {
-        const workflowsResponse = await getWorkflowsApiV1WorkflowFetchGet({
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const workflows = workflowsResponse.data ? (Array.isArray(workflowsResponse.data) ? workflowsResponse.data : [workflowsResponse.data]) : [];
-        const activeWorkflows = workflows.filter(w => w.status === 'active');
-
-        logger.debug('[HomePage] Found workflows for local provider:', {
-          total: workflows.length,
-          active: activeWorkflows.length
-        });
-
-        if (activeWorkflows.length > 0) {
-          logger.debug('[HomePage] Redirecting to /workflow - user has workflows');
-          redirect('/workflow');
-        } else {
-          logger.debug('[HomePage] Redirecting to /create-workflow - no workflows found');
-          redirect('/create-workflow');
-        }
-      }
-    } catch (error) {
-      // Re-throw navigation errors (redirects, not found, etc.) - they're intentional
-      if (isNextRouterError(error)) {
-        throw error;
-      }
-
-      logger.error('[HomePage] Error checking workflows for local provider:', error);
-      // Default to create-workflow on actual errors
-      logger.debug('[HomePage] Defaulting to /create-workflow due to error');
-      redirect('/create-workflow');
-    }
+    logger.debug('[HomePage] Local provider detected, showing landing page');
+    // Landing page will be shown below via SignInClient
+    // Users click "Get Started" to go to /workflow
   }
 
   logger.debug('[HomePage] Getting server user...');
@@ -94,14 +59,7 @@ export default async function Home() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
+    <div>
       <SignInClient />
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleDollarSign, HelpCircle,Star } from 'lucide-react';
+import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -63,20 +63,6 @@ export default function BaseHeader({ headerActions, backButton, showFeaturesNav 
                                         >
                                             Campaigns
                                         </Link>
-                                        <Link
-                                            href="/automation"
-                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/automation') ? 'text-primary' : 'text-muted-foreground'
-                                                }`}
-                                        >
-                                            Automation
-                                        </Link>
-                                        <Link
-                                            href="/looptalk"
-                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/looptalk') ? 'text-primary' : 'text-muted-foreground'
-                                                }`}
-                                        >
-                                            LoopTalk
-                                        </Link>
                                     </>
                                 )}
                                 <Link
@@ -92,13 +78,6 @@ export default function BaseHeader({ headerActions, backButton, showFeaturesNav 
                                         }`}
                                 >
                                     Reports
-                                </Link>
-                                <Link
-                                    href="/api-keys"
-                                    className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/api-keys') ? 'text-primary' : 'text-muted-foreground'
-                                        }`}
-                                >
-                                    Developers
                                 </Link>
                             </div>
                         )}
@@ -134,28 +113,7 @@ export default function BaseHeader({ headerActions, backButton, showFeaturesNav 
                                     }]}
                                 />
                             </React.Suspense>
-                        ) : (
-                            <>
-                                <a
-                                    href="https://github.com/voicefx-hq/voicefx/issues/new/choose"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md hover:bg-accent transition-colors"
-                                >
-                                    <HelpCircle className="w-4 h-4" />
-                                    Get Help
-                                </a>
-                                <a
-                                    href="https://github.com/voicefx-hq/voicefx"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md hover:bg-accent transition-colors"
-                                >
-                                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                    Star us on GitHub
-                                </a>
-                            </>
-                        )}
+                        ) : null}
                     </div>
                 </nav>
             </div>

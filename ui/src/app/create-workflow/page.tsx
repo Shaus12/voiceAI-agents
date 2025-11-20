@@ -15,7 +15,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { WORKFLOW_RUN_MODES } from '@/constants/workflowRunModes';
 import { useAuth } from '@/lib/auth';
 import logger from '@/lib/logger';
@@ -32,6 +35,19 @@ export default function CreateWorkflowPage() {
     const [callType, setCallType] = useState<'INBOUND' | 'OUTBOUND'>('INBOUND');
     const [useCase, setUseCase] = useState('');
     const [activityDescription, setActivityDescription] = useState('');
+
+    // Voice Activity Detection settings
+    const [vadThreshold1, setVadThreshold1] = useState(0.7);
+    const [vadThreshold2, setVadThreshold2] = useState(0.4);
+    const [vadThreshold3, setVadThreshold3] = useState(0.8);
+    const [vadThreshold4, setVadThreshold4] = useState(0.6);
+
+    // Ambient Noise
+    const [enableAmbientNoise, setEnableAmbientNoise] = useState(false);
+
+    // Call Management
+    const [maxDuration, setMaxDuration] = useState(600); // 10 minutes
+    const [idleTimeout, setIdleTimeout] = useState(10); // 10 seconds
 
     const handleCreateWorkflow = async () => {
         if (!useCase || !activityDescription) {
@@ -163,6 +179,118 @@ export default function CreateWorkflowPage() {
                                         value={activityDescription}
                                         onChange={(e) => setActivityDescription(e.target.value)}
                                     />
+                                </div>
+                            </div>
+
+                            {/* Voice Activity Detection */}
+                            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-4">
+                                <div>
+                                    <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">Voice Activity Detection</h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Hyperparameters to set for voice activity detection. Already configured with defaults.</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Threshold 1</Label>
+                                        <div className="flex items-center gap-3">
+                                            <Slider
+                                                value={[vadThreshold1]}
+                                                onValueChange={(value) => setVadThreshold1(value[0])}
+                                                min={0}
+                                                max={1}
+                                                step={0.1}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-sm font-medium w-10 text-gray-900 dark:text-gray-100">{vadThreshold1.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Threshold 2</Label>
+                                        <div className="flex items-center gap-3">
+                                            <Slider
+                                                value={[vadThreshold2]}
+                                                onValueChange={(value) => setVadThreshold2(value[0])}
+                                                min={0}
+                                                max={1}
+                                                step={0.1}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-sm font-medium w-10 text-gray-900 dark:text-gray-100">{vadThreshold2.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Threshold 3</Label>
+                                        <div className="flex items-center gap-3">
+                                            <Slider
+                                                value={[vadThreshold3]}
+                                                onValueChange={(value) => setVadThreshold3(value[0])}
+                                                min={0}
+                                                max={1}
+                                                step={0.1}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-sm font-medium w-10 text-gray-900 dark:text-gray-100">{vadThreshold3.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Threshold 4</Label>
+                                        <div className="flex items-center gap-3">
+                                            <Slider
+                                                value={[vadThreshold4]}
+                                                onValueChange={(value) => setVadThreshold4(value[0])}
+                                                min={0}
+                                                max={1}
+                                                step={0.1}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-sm font-medium w-10 text-gray-900 dark:text-gray-100">{vadThreshold4.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Ambient Noise */}
+                            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">Ambient Noise</h3>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Add background office ambient noise to make the conversation sound more natural.</p>
+                                    </div>
+                                    <Switch
+                                        checked={enableAmbientNoise}
+                                        onCheckedChange={setEnableAmbientNoise}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Call Management */}
+                            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-4">
+                                <div>
+                                    <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">Call Management</h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Configure call duration limits and idle timeout settings.</p>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Max Call Duration (seconds)</Label>
+                                        <Input
+                                            type="number"
+                                            value={maxDuration}
+                                            onChange={(e) => setMaxDuration(Number(e.target.value))}
+                                            min={0}
+                                            className="w-full"
+                                        />
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Default: 600 (10 minutes)</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-700 dark:text-gray-300">Idle Timeout (seconds)</Label>
+                                        <Input
+                                            type="number"
+                                            value={idleTimeout}
+                                            onChange={(e) => setIdleTimeout(Number(e.target.value))}
+                                            min={0}
+                                            className="w-full"
+                                        />
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Default: 10 seconds</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
